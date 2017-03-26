@@ -1,0 +1,94 @@
+<!DOCTYPE html>
+<html lang="en" data-ng-app="testApp">
+<head>
+    <meta charset="UTF-8">
+    <title>Angulas Js</title>
+    <script src="https://ajax.googleapis.com/ajax/libs/angularjs/1.6.3/angular.min.js"></script>
+    <script src="https://ajax.googleapis.com/ajax/libs/angularjs/1.6.3/angular-route.js"></script>
+</head>
+<body>
+<!--Custom Directive: 1. Element 2. Attribute-->
+<div header-title></div>
+
+<div ng-view></div>
+
+<div part-title></div>
+
+<script>
+    //init module angular
+    var test = angular.module('testApp', ['ngRoute']);
+
+    //factory
+    test.factory('factoryOrang', function ($http) {
+        var factoryOrang = {};
+
+        factoryOrang.getOrang = function () {
+            return $http.get('data.php')
+        };
+
+        factoryOrang.putOrang = function (datas) {
+            return $http.post('add.php', datas)
+        }
+
+        return factoryOrang;
+    });
+
+    //header
+    test.directive('headerTitle', function () {
+        return{
+            restrict    : 'A',
+            templateUrl : 'header.html'
+        }
+    });
+
+    //part-title + search data
+    test.directive('partTitle', function () {
+        return{
+            restrict    : 'A',
+            templateUrl : 'part.html',
+            controller  : function ($scope, factoryOrang) {
+                factoryOrang.getOrang().then(function (hasil) {
+                    $scope.data = hasil.data;
+                });
+            }
+        }
+    });
+
+    //route
+    test.config(function ($routeProvider) {
+      $routeProvider
+          .when('/tambahinfo',{
+              templateUrl: 'tambahinfo.html',
+              controller: 'add'
+          })
+          .when('/kontak', {
+              templateUrl: 'kontak.html'
+          })
+          .otherwise({redirectTo: '/'});
+    });
+
+    //add data to database
+    test.controller('add', function ($scope, $http, factoryOrang) {
+        $scope.tambahData = function () {
+            databaru = {
+                nama : $scope.databaru.nama,
+                kota : $scope.databaru.kota
+            };
+
+            factoryOrang.putOrang(databaru).then(function (hasil) {
+                $scope.data.push({
+                    nama: $scope.databaru.nama,
+                    kota: $scope.databaru.kota
+                });
+
+                $scope.databaru.nama = '';
+                $scope.databaru.kota = '';
+
+                alert(hasil.data);
+            });
+        }
+    })
+
+</script>
+</body>
+</html>

@@ -1,0 +1,43 @@
+<!DOCTYPE html>
+<html lang="en" data-ng-app="testApp">
+<head>
+    <meta charset="UTF-8">
+    <title>Angulas Js</title>
+    <script src="https://ajax.googleapis.com/ajax/libs/angularjs/1.6.3/angular.min.js"></script>
+</head>
+<body>
+    <!--Custom Directive: 1. Element 2. Attribute-->
+    <div header-title></div>
+
+    <div part-title></div>
+
+    <script>
+        //init module angular
+        var test = angular.module('testApp', []);
+
+        //header
+        test.directive('headerTitle', function () {
+            return{
+                restrict    : 'A',
+                templateUrl : 'header.html'
+            }
+        })
+
+        //part-title + search data
+        test.directive('partTitle', function () {
+            return{
+                restrict    : 'A',
+                templateUrl : 'part.html',
+                controller  : function ($scope) {
+                    $scope.data = [{nama: 'Hilman', kota: 'Makasar'},
+                                   {nama: 'Asep', kota: 'Manado'}]
+                }
+            }
+        })
+
+        //route
+
+
+    </script>
+</body>
+</html>
